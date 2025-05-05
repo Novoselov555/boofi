@@ -1,0 +1,22 @@
+.main-part {
+    margin: 50px;
+    font-size: 30px;
+    font-family: "URW Gothic", serif;
+}
+
+.custom-list {
+    list-style: none;
+    padding: 0;
+}
+
+.custom-list li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.icon {
+    width: 40px;
+    height: 40px;
+    margin-right: 20px;
+}

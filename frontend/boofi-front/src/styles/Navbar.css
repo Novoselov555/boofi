@@ -1,0 +1,32 @@
+.navbar {
+    background-color: rgb(0, 100, 210);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.logo {
+    width: 200px;
+    height: 200px;
+    object-fit: contain;
+}
+
+.nav-links {
+    display: flex;
+    gap: 50px;
+}
+
+.nav-link {
+    color: white;
+    font-weight: bold;
+    font-size: 30px;
+    font-family: "URW Gothic", serif;
+}
+
+.nav-link:hover {
+    text-decoration: underline;
+}
+

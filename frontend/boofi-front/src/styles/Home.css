@@ -1,0 +1,40 @@
+.home-container {
+    display: flex;
+    gap: 40px;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+.home-card {
+    width: 600px;
+    height: 600px;
+    background-color: #eeeeee;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #222;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    text-align: center;
+}
+
+.home-card:hover {
+    transform: scale(1.05);
+    background-color: #e0e0e0;
+}
+
+.card-image {
+    height: 400px;
+    width: 300px;
+    object-fit: cover;
+    margin-bottom: 20px;
+}
+
+.card-label {
+    font-size: 20px;
+    font-family: "URW Gothic", serif;
+}

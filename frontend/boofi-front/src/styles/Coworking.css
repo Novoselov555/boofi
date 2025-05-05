@@ -1,0 +1,21 @@
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(14, 30px);
+    grid-template-rows: repeat(12, 30px);
+    gap: 14px;
+    justify-content: center;
+    margin-top: 60px;
+}
+
+.seat {
+    width: 28px;
+    height: 28px;
+    background-color: #aaa;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.seat.selected {
+    background-color: #2196f3;
+}
