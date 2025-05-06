@@ -33,6 +33,7 @@ dependencies {
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	testImplementation("org.testcontainers:postgresql:1.17.6")
 	testImplementation("org.testcontainers:junit-jupiter:1.17.6")
+	runtimeOnly("org.postgresql:postgresql")
 }
 
 tasks.withType<Test> {

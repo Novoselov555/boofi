@@ -14,7 +14,10 @@ import java.sql.Time;
 @AllArgsConstructor
 public class CoworkingDto {
     @NotBlank
-    private Long place;
+    private Long seatId;
+
+    @NotBlank
+    private String status;
 
     @NotBlank
     private Time startTime;

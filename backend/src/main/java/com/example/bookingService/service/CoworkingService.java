@@ -33,9 +33,10 @@ public class CoworkingService {
 
     public Coworking update(Long id, CoworkingDto dto) {
         Coworking coworking = findById(id);
-        coworking.setPlace(dto.getPlace());
+        coworking.setSeatId(dto.getSeatId());
         coworking.setStartTime(dto.getStartTime());
         coworking.setEndTime(dto.getEndTime());
+        coworking.setStatus(dto.getStatus());
         return coworkingRepository.save(coworking);
     }
 

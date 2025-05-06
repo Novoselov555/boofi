@@ -8,6 +8,8 @@ import lombok.Setter;
 
 import java.sql.Time;
 
+@Entity
+@Table(name = "coworking")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,7 +24,10 @@ public class Coworking {
     private User user;
 
     @Column(nullable = false)
-    private Long place;
+    private Long seatId;
+
+    @Column(nullable = false)
+    private String status;
 
     @Column(nullable = false)
     private Time startTime;
