@@ -1,35 +1,32 @@
 package com.example.bookingService.entity;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
+import java.sql.Time;
 
-@Entity
-@Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class Coworking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
+    @ManyToOne(optional = false)
+    @JoinColumn(name="userId", nullable = false)
+    private User user;
 
     @Column(nullable = false)
-    private String email;
+    private Long place;
 
     @Column(nullable = false)
-    private String login;
+    private Time startTime;
 
     @Column(nullable = false)
-    private String password;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Coworking> coworkings;
+    private Time endTime;
 }
