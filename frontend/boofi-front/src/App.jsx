@@ -7,6 +7,7 @@ import Navbar from './components/Navbar';
 import Coworking from './components/Coworking';
 import Meeting from './components/Meeting';
 import Callbox from './components/Callbox';
+import Register from "./components/Register.jsx";
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
                 <Route path="/coworking" element={<Coworking />} />
                 <Route path="/meeting" element={<Meeting />} />
                 <Route path="/callbox" element={<Callbox />} />
+                <Route path="/auth/register" element={<Register />} />
             </Routes>
         </BrowserRouter>
 
