@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { saveToken } from "../Auth";
+import "../styles/Form.css"
 
 function Register() {
     const [form, setForm] = useState({ name: "", email: "", password: "" });
@@ -16,16 +17,16 @@ function Register() {
             const resp = await fetch("http://localhost:8080/auth/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                credentials: "include",  // если вы всё-таки храните в куках, иначе опустите
+                credentials: "include",
                 body: JSON.stringify(form),
             });
 
-            const text = await resp.text();           // читаем как текст
+            const text = await resp.text();
             if (!resp.ok) throw new Error(text || `Ошибка ${resp.status}`);
 
-            const { token } = JSON.parse(text);       // парсим только если OK
-            saveToken(token);                         // сохраняем в localStorage
-            navigate("/");                            // редирект после успешной регистрации
+            const { token } = JSON.parse(text);
+            saveToken(token);
+            navigate("/");
 
         } catch (err) {
             setError(err.message);
@@ -34,8 +35,8 @@ function Register() {
 
 
     return (
-        <div className="register-container">
-            <form className="register-form" onSubmit={handleSubmit}>
+        <div className="form-container">
+            <form className="form" onSubmit={handleSubmit}>
                 <h2>Регистрация</h2>
                 {error && <p style={{color: "red"}}>{error}</p>}
                 <input

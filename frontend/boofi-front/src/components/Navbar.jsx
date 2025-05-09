@@ -1,19 +1,17 @@
 import React from "react";
-import {Link, useLocation} from "react-router-dom"; // правильный импорт
+import {Link} from "react-router-dom";
 import "../styles/Navbar.css";
 import logo from '../img/BoofiLogo.png';
+import {isAuthenticated} from "../Auth.jsx";
 
 function Navbar() {
-    const location = useLocation();
-    const path = location.pathname;
+    if (!isAuthenticated()) {
+        return (
+            <nav className="navbar">
+                <Link to="/">
+                    <img src={logo} alt="Logo" className="logo"/>
+                </Link>
 
-    return (
-        <nav className="navbar">
-            <Link to="/">
-                <img src={logo} alt="Logo" className="logo"/>
-            </Link>
-
-            {(path === "/" || path === "/about" || path === "/contact") && (
                 <>
                     <div className="nav-links">
                         <Link to="/" className="nav-link">Главная</Link>
@@ -30,21 +28,33 @@ function Navbar() {
                         </Link>
                     </div>
                 </>
-            )}
+            </nav>
+        );
+    } else {
+        return (
+            <nav className="navbar">
+                <Link to="/">
+                    <img src={logo} alt="Logo" className="logo"/>
+                </Link>
 
-            {path.startsWith("/coworking") && (
-                <div className="nav-panel">
-                    <span>Панель коворкинга</span>
-                </div>
-            )}
+                <>
+                    <div className="nav-links">
+                        <Link to="/" className="nav-link">Главная</Link>
+                        <Link to="/about" className="nav-link">Обо мне</Link>
+                        <Link to="/contact" className="nav-link">Контакты</Link>
+                    </div>
 
-            {path.startsWith("/meeting") && (
-                <div className="nav-panel">
-                    <span>Панель переговорок</span>
-                </div>
-            )}
-        </nav>
-    );
+                    <div className="auth-buttons">
+                        <Link to={"/profile"}>
+                            <button className="btn">Личный кабинет</button>
+                        </Link>
+                    </div>
+                </>
+            </nav>
+
+        );
+    }
+
 }
 
 export default Navbar;

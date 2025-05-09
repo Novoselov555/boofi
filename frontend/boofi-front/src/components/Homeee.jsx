@@ -5,7 +5,7 @@ import coworking from "../img/coworking.jpg"
 import meeting from "../img/meeting.jpg"
 import callBox from "../img/callbox.jpg"
 
-function Home() {
+function Homeee() {
     return (
         <div className="home-container">
             <Link to="/coworking" className="home-card">
@@ -26,4 +26,4 @@ function Home() {
     );
 }
 
-export default Home;
+export default Homeee;

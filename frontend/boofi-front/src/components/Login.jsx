@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import "../styles/Register.css"
+import "../styles/Form.css"
 import {Link, useNavigate} from "react-router";
 import {saveToken} from "../Auth.jsx";
 
@@ -35,8 +35,8 @@ function Login() {
     };
 
     return (
-        <div className="register-container">
-            <form className="register-form" onSubmit={handleSubmit}>
+        <div className="form-container">
+            <form className="form" onSubmit={handleSubmit}>
                 <h2>Вход</h2>
                 {error && <p style={{color: "red"}}>{error}</p>}
                 <input
