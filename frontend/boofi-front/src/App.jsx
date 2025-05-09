@@ -8,7 +8,8 @@ import Coworking from './components/Coworking';
 import Meeting from './components/Meeting';
 import Callbox from './components/Callbox';
 import Register from "./components/Register.jsx";
-
+import Login from "./components/Login.jsx";
+import PrivateRoute from "./PrivateRoute.jsx";
 
 function App() {
     return (
@@ -18,10 +19,16 @@ function App() {
                 <Route path="/" element={<Home/>} />
                 <Route path="/about" element={<About/>} />
                 <Route path="/contact" element={<Contact/>} />
-                <Route path="/coworking" element={<Coworking />} />
-                <Route path="/meeting" element={<Meeting />} />
-                <Route path="/callbox" element={<Callbox />} />
                 <Route path="/auth/register" element={<Register />} />
+                <Route path="/auth/login" element={<Login />} />
+
+                <Route element={<PrivateRoute/>}>
+                    <Route path="/coworking" element={<Coworking />} />
+                    <Route path="/meeting" element={<Meeting />} />
+                    <Route path="/callbox" element={<Callbox />} />
+                </Route>
+
+
             </Routes>
         </BrowserRouter>
 

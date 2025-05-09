@@ -1,55 +1,48 @@
 import React, { useState } from "react";
-import "../styles/Register.css";
-import {Link} from "react-router";
+import { useNavigate, Link } from "react-router-dom";
+import { saveToken } from "../Auth";
 
 function Register() {
-    const [formData, setFormData] = useState({
-        name: "",
-        email: "",
-        password: ""
-    });
+    const [form, setForm] = useState({ name: "", email: "", password: "" });
+    const [error, setError] = useState("");
+    const navigate = useNavigate();
 
-    const handleChange = (e) => {
-        setFormData({...formData, [e.target.name]: e.target.value});
-    };
+    const handleChange = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async e => {
         e.preventDefault();
-
+        setError("");
         try {
-            const response = await fetch("http://localhost:8080/auth/register", {
+            const resp = await fetch("http://localhost:8080/auth/register", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(formData)
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",  // если вы всё-таки храните в куках, иначе опустите
+                body: JSON.stringify(form),
             });
 
-            if (!response.ok) {
-                throw new Error("Ошибка при регистрации");
-            }
+            const text = await resp.text();           // читаем как текст
+            if (!resp.ok) throw new Error(text || `Ошибка ${resp.status}`);
 
-            const data = await response.json();
-            console.log("Успешная регистрация:", data);
+            const { token } = JSON.parse(text);       // парсим только если OK
+            saveToken(token);                         // сохраняем в localStorage
+            navigate("/");                            // редирект после успешной регистрации
 
-            // Перенаправление на страницу логина, например:
-            window.location.href = "/login";
-
-        } catch (error) {
-            console.error("Ошибка:", error.message);
+        } catch (err) {
+            setError(err.message);
         }
     };
+
 
     return (
         <div className="register-container">
             <form className="register-form" onSubmit={handleSubmit}>
                 <h2>Регистрация</h2>
-
+                {error && <p style={{color: "red"}}>{error}</p>}
                 <input
                     type="text"
                     name="name"
                     placeholder="Имя"
-                    value={formData.name}
+                    value={form.name}
                     onChange={handleChange}
                     required
                 />
@@ -58,7 +51,7 @@ function Register() {
                     type="email"
                     name="email"
                     placeholder="Почта"
-                    value={formData.email}
+                    value={form.email}
                     onChange={handleChange}
                     required
                 />
@@ -67,7 +60,7 @@ function Register() {
                     type="password"
                     name="password"
                     placeholder="Пароль"
-                    value={formData.password}
+                    value={form.password}
                     onChange={handleChange}
                     required
                 />
@@ -76,7 +69,7 @@ function Register() {
 
                 <h2>
                     <p>Уже зарегистрированы?</p>
-                    <Link to={"/login"}><p>Войдите в свой аккаунт</p></Link>
+                    <Link to={"/auth/login"}><p>Войдите в свой аккаунт</p></Link>
                 </h2>
             </form>
         </div>

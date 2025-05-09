@@ -3,6 +3,8 @@ package com.example.bookingService.service;
 import com.example.bookingService.dto.LoginRequest;
 import com.example.bookingService.dto.RegisterRequest;
 import com.example.bookingService.entity.User;
+import com.example.bookingService.exception.UserAlreadyExistsException;
+import com.example.bookingService.exception.UserNotFoundException;
 import com.example.bookingService.repository.UserRepository;
 import com.example.bookingService.security.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,7 +24,7 @@ public class AuthService {
 
     public String register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already in use");
+            throw new UserAlreadyExistsException("Аккаунт с такой почтой уже существует");
         }
 
         User user = new User();
@@ -37,7 +39,7 @@ public class AuthService {
 
     public String login(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("Аккаунт с такой почтой не существует"));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             throw new RuntimeException("Invalid credentials");
