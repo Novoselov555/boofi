@@ -1,57 +1,75 @@
 import React, {useState} from "react";
-import "../styles/Form.css"
-import {Link, useNavigate} from "react-router";
+import {useNavigate, Link} from "react-router";
 import {saveToken} from "../Auth.jsx";
 
 function Login() {
-    const [formData, setFormData] = useState({email: "", password: ""});
+    const [form, setForm] = useState({
+            name: "",
+            email: "",
+            password: ""
+        }
+    );
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
-    const handleChange = (e) =>
-        setFormData(prev => ({...prev, [e.target.name]: e.target.value}));
-    const handleSubmit = async (e) => {
+    const handleChange = e => {
+        setForm(f => ({
+            ...f, [e.target.name]: e.target.value
+        }));
+    };
+
+    const handleSubmit = async e => {
         e.preventDefault();
+        setError("");
         try {
             const response = await fetch("http://localhost:8080/auth/login", {
                 method: "POST",
-                headers: {"Content-Type": "application.json"},
-                body: JSON.stringify(formData),
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(form),
                 credentials: "include"
             });
 
+            const text = await response.text();
+
             if (!response.ok) {
-                const {message} = await response.json();
-                throw new Error(message || "Ошибка при входе");
+                throw new Error(text || `Ошибка ${response.status}`);
             }
 
-            const {token} = await response.json();
-            saveToken(token)
+            const {token} = await JSON.parse(text);
+            saveToken(token);
             navigate("/");
 
         } catch (err) {
-            setError(err);
+            setError(err.message)
         }
     };
 
     return (
         <div className="form-container">
-            <form className="form" onSubmit={handleSubmit}>
+            <form className="form" onChange={handleSubmit}>
                 <h2>Вход</h2>
                 {error && <p style={{color: "red"}}>{error}</p>}
                 <input
+                    type="text"
+                    placeholder="Имя"
+                    name="name"
+                    value={form.name}
+                    onChange={handleChange}
+                    required
+                />
+                <input
                     type="email"
-                    name="email"
                     placeholder="Почта"
-                    value={formData.email}
+                    name="email"
+                    value={form.email}
                     onChange={handleChange}
                     required
                 />
                 <input
                     type="password"
-                    name="password"
                     placeholder="Пароль"
-                    value={formData.password}
+                    name="password"
+                    value={form.password}
                     onChange={handleChange}
                     required
                 />
@@ -63,6 +81,7 @@ function Login() {
                     </Link>
                 </h2>
             </form>
+
         </div>
     );
 }

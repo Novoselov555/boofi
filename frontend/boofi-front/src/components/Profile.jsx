@@ -1,7 +1,8 @@
-import React, { useState} from "react";
+import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {clearToken, saveToken} from "../Auth.jsx";
+import {clearToken, getToken, saveToken} from "../Auth.jsx";
 import "../styles/Form.css"
+
 function Profile() {
     const [form, setForm] = useState({name: "", email: "", password: ""});
     const [error, setError] = useState("");
@@ -14,27 +15,21 @@ function Profile() {
         navigate("/auth/register");
     }
 
-    // const handleDeleteUser = async e => {
-    //     e.preventDefault();
-    //     setError("");
-    //
-    //     try {
-    //         const resp = await fetch("http://localhost:8080/users", {
-    //             method: "DELETE",
-    //             headers: {"Content-Type": "application/json"},
-    //             credentials: "include",
-    //             body: JSON.stringify(form)
-    //         });
-    //         const text = await resp.text();
-    //         if (!resp.ok) throw new Error(text || `Ошибка ${resp.status}`);
-    //
-    //         const {token} = JSON.parse(text);
-    //         saveToken(token);
-    //         navigate("/auth/register");
-    //     } catch (err) {
-    //         setError(err.message);
-    //     }
-    // }
+    const handleDeleteUser = async e => {
+        e.preventDefault();
+        setError("");
+        try {
+            const token = getToken();
+            // const response = await fetch(`https://localhost:8080/users/${id}`, {
+            //     method: "DELETE",
+            //     headers: { "Content-Type": "application/json"},
+            //     body: JSON.stringify(form)
+            // });
+            console.log(token);
+        } catch (err) {
+            setError(err);
+        }
+    };
 
     const handleSubmit = async e => {
         e.preventDefault();
@@ -90,7 +85,8 @@ function Profile() {
                 />
 
                 <button type="submit">Применить изменения</button>
-                <button onClick={logout}>Выйти из аккаунта</button>
+                <button onClick={logout} style={{background: "indianred"}}>Выйти из аккаунта</button>
+                <button onClick={handleDeleteUser}>Удалить аккаунт</button>
             </form>
         </div>
     );
