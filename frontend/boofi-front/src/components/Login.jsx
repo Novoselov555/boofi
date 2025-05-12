@@ -1,16 +1,16 @@
 import React, {useState} from "react";
-import {useNavigate, Link} from "react-router";
-import {saveToken} from "../Auth.jsx";
+import {Link} from "react-router";
+import {useAuth} from "./AuthContext.jsx";
 
 function Login() {
+    const { login } = useAuth();
+
     const [form, setForm] = useState({
-            name: "",
             email: "",
             password: ""
         }
     );
     const [error, setError] = useState(null);
-    const navigate = useNavigate();
 
     const handleChange = e => {
         setForm(f => ({
@@ -36,8 +36,7 @@ function Login() {
             }
 
             const {token} = await JSON.parse(text);
-            saveToken(token);
-            navigate("/");
+            login(token);
 
         } catch (err) {
             setError(err.message)
@@ -46,17 +45,9 @@ function Login() {
 
     return (
         <div className="form-container">
-            <form className="form" onChange={handleSubmit}>
+            <form className="form" onSubmit={handleSubmit}>
                 <h2>Вход</h2>
                 {error && <p style={{color: "red"}}>{error}</p>}
-                <input
-                    type="text"
-                    placeholder="Имя"
-                    name="name"
-                    value={form.name}
-                    onChange={handleChange}
-                    required
-                />
                 <input
                     type="email"
                     placeholder="Почта"

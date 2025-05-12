@@ -1,16 +1,18 @@
 import React, {useState} from "react";
-import {Link, useNavigate} from "react-router";
+import {Link} from "react-router";
 import {saveToken} from "../Auth.jsx";
 import "../styles/Form.css"
+import {useAuth} from "./AuthContext.jsx";
 
 function Register() {
+    const {login} = useAuth();
+
     const [form, setForm] = useState({
         name: "",
         email: "",
         password: ""
     });
     const [error, setError] = useState(null);
-    const navigate = useNavigate();
 
     const handleChange = e => {
         setForm(f => ({
@@ -37,7 +39,7 @@ function Register() {
 
             const {token} = await JSON.parse(text);
             saveToken(token);
-            navigate("/");
+            login(token);
         } catch(err) {
             setError(err.message);
         }

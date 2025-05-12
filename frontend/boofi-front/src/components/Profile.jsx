@@ -1,33 +1,37 @@
 import React, {useState} from "react";
-import {useNavigate} from "react-router-dom";
-import {clearToken, getToken, saveToken} from "../Auth.jsx";
+import {getToken} from "../Auth.jsx";
 import "../styles/Form.css"
+import GetUserId from "./GetUserId.jsx";
+import {useAuth} from "./AuthContext.jsx";
 
 function Profile() {
+    const {logout} = useAuth();
     const [form, setForm] = useState({name: "", email: "", password: ""});
     const [error, setError] = useState("");
-    const navigate = useNavigate();
 
     const handleChange = (e) => setForm(f => ({...f, [e.target.name]: e.target.value}));
 
-    const logout = () => {
-        clearToken();
-        navigate("/auth/register");
-    }
 
     const handleDeleteUser = async e => {
         e.preventDefault();
         setError("");
         try {
             const token = getToken();
-            // const response = await fetch(`https://localhost:8080/users/${id}`, {
-            //     method: "DELETE",
-            //     headers: { "Content-Type": "application/json"},
-            //     body: JSON.stringify(form)
-            // });
-            console.log(token);
+            const id = await GetUserId(token);
+
+            const response = await fetch(`http://localhost:8080/users/${id}`, {
+                method: "DELETE",
+                headers: {"Authorization": `Bearer ${token}`}
+            });
+
+            if (!response.ok) {
+                throw new Error(`Ошибка ${response.status}`);
+            }
+
+            console.log(`Пользователь с id ${id} удален`);
+            logout();
         } catch (err) {
-            setError(err);
+            setError(err.message);
         }
     };
 
@@ -35,18 +39,23 @@ function Profile() {
         e.preventDefault();
         setError("");
         try {
-            const resp = await fetch("http://localhost:8080/profile", {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                credentials: "include",
+            const token = getToken();
+            const id = await GetUserId(token);
+
+            const response = await fetch(`http://localhost:8080/users/${id}`,{
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
                 body: JSON.stringify(form)
             });
-            const text = await resp.text();
-            if (!resp.ok) throw new Error(text || `Ошибка ${resp.status}`);
 
-            const {token} = JSON.parse(text);
-            saveToken(token);
-            navigate("/auth/register");
+            if (!response.ok) {
+                throw new Error(`Ошибка ${response.status}`);
+            }
+
+
         } catch (err) {
             setError(err.message);
         }
@@ -86,7 +95,7 @@ function Profile() {
 
                 <button type="submit">Применить изменения</button>
                 <button onClick={logout} style={{background: "indianred"}}>Выйти из аккаунта</button>
-                <button onClick={handleDeleteUser}>Удалить аккаунт</button>
+                <button onClick={handleDeleteUser} style={{background: "red"}}>Удалить аккаунт</button>
             </form>
         </div>
     );

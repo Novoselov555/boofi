@@ -28,10 +28,11 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public User update(Long id, UserDto dto) {
-        User user = findById(id);
-        user.setName(dto.getName());
-        user.setEmail(dto.getEmail());
+    public User update(Long id, User user) {
+        User u = findById(id);
+        u.setName(user.getName());
+        u.setEmail(user.getEmail());
+        u.setPassword(user.getPassword());
         return userRepository.save(user);
     }
 

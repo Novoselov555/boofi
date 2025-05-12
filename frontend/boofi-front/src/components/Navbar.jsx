@@ -2,10 +2,12 @@ import React from "react";
 import {Link} from "react-router-dom";
 import "../styles/Navbar.css";
 import logo from '../img/BoofiLogo.png';
-import {isAuthenticated} from "../Auth.jsx";
+// import {isAuthenticated} from "../Auth.jsx";
+import { useAuth } from './AuthContext.jsx';
 
 function Navbar() {
-    if (!isAuthenticated()) {
+    const { isAuth } = useAuth();
+    if (!isAuth) {
         return (
             <nav className="navbar">
                 <Link to="/">
