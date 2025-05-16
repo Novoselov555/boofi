@@ -30,3 +30,25 @@
     text-decoration: underline;
 }
 
+.auth-buttons {
+    display: flex;
+    gap: 16px;
+    margin-left: auto;
+}
+
+.auth-buttons .btn {
+    padding: 10px 20px;
+    background-color: white;
+    color: rgb(0, 100, 210);
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.auth-buttons .btn:hover {
+    background-color: rgb(0, 80, 180);
+    color: white;
+}

@@ -19,3 +19,55 @@
 .seat.selected {
     background-color: #2196f3;
 }
+.coworking-wrapper {
+    position: relative;
+}
+
+.booking-panel {
+    position: fixed;
+    right: 0; top: 0; bottom: 0;
+    width: 320px;
+    background: #fff;
+    box-shadow: -2px 0 8px rgba(0,0,0,0.1);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+}
+
+.booking-panel .close-btn {
+    align-self: flex-end;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.booking-panel h2 {
+    margin: 16px 0;
+    font-size: 18px;
+}
+
+.booking-panel label {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+    font-weight: 500;
+}
+
+.booking-panel input {
+    margin-top: 4px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.booking-panel .confirm-btn {
+    margin-top: auto;
+    padding: 12px;
+    background: #0052cc;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+}
