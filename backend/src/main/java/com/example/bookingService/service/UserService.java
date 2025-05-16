@@ -7,6 +7,7 @@ import com.example.bookingService.mapper.UserMapper;
 import com.example.bookingService.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public User create(UserDto userDto) {
         User user = UserMapper.toEntity(userDto);
@@ -32,8 +34,8 @@ public class UserService {
         User u = findById(id);
         u.setName(user.getName());
         u.setEmail(user.getEmail());
-        u.setPassword(user.getPassword());
-        return userRepository.save(user);
+        u.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(u);
     }
 
     public void delete(Long id) {
