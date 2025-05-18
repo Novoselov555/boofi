@@ -6,7 +6,7 @@ import logo from '../img/BoofiLogo.png';
 import { useAuth } from './AuthContext.jsx';
 
 function Navbar() {
-    const { isAuth } = useAuth();
+    const { isAuth, userRole } = useAuth();
     if (!isAuth) {
         return (
             <nav className="navbar">
@@ -50,6 +50,11 @@ function Navbar() {
                         <Link to={"/profile"}>
                             <button className="btn">Личный кабинет</button>
                         </Link>
+                        {userRole === 'ADMIN' && (
+                            <Link to={"/admin"}>
+                                <button className="btn admin-btn">Админ панель</button>
+                            </Link>
+                        )}
                     </div>
                 </>
             </nav>

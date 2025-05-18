@@ -1,5 +1,6 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/Coworking.css";
+import { getToken } from "../Auth.jsx";
 
 const initialSeats = [
     // Верхняя линия (четверки)
@@ -7,130 +8,198 @@ const initialSeats = [
     { id: 3, row: 1, col: 2 }, { id: 4, row: 2, col: 2 },
     { id: 5, row: 1, col: 4 }, { id: 6, row: 2, col: 4 },
     { id: 7, row: 1, col: 5 }, { id: 8, row: 2, col: 5 },
-
-    { id: 9, row: 1, col: 7 }, { id:10, row: 2, col: 7 },
-    { id:11, row: 1, col: 8 }, { id:12, row: 2, col: 8 },
-    { id:13, row: 1, col: 10 }, { id:14, row: 2, col: 10 },
-    { id:15, row: 1, col:11 }, { id:16, row: 2, col:11 },
-
-    { id:17, row: 1, col: 13 }, { id:18, row: 2, col: 13 },
-    { id:19, row: 1, col: 14 }, { id:20, row: 2, col: 14 },
-
+    { id: 9, row: 1, col: 7 }, { id: 10, row: 2, col: 7 },
+    { id: 11, row: 1, col: 8 }, { id: 12, row: 2, col: 8 },
+    { id: 13, row: 1, col: 10 }, { id: 14, row: 2, col: 10 },
+    { id: 15, row: 1, col: 11 }, { id: 16, row: 2, col: 11 },
+    { id: 17, row: 1, col: 13 }, { id: 18, row: 2, col: 13 },
+    { id: 19, row: 1, col: 14 }, { id: 20, row: 2, col: 14 },
     // Средняя линия (одна двойка)
-    { id:21, row: 4, col: 1 }, { id:22, row: 5, col: 1 },
-
+    { id: 21, row: 4, col: 1 }, { id: 22, row: 5, col: 1 },
     // Нижняя линия (двойки)
-    { id:23, row: 7, col: 1 }, { id:24, row: 8, col: 1 },
-
-    { id:25, row: 7, col: 5 }, { id:26, row: 8, col: 5 },
-    { id:27, row: 7, col: 8 }, { id:28, row: 8, col: 8 },
-    { id:29, row: 7, col: 11 }, { id:30, row: 8, col: 11 },
-    { id:31, row: 7, col: 14 }, { id:32, row: 8, col: 14 },
-
-
+    { id: 23, row: 7, col: 1 }, { id: 24, row: 8, col: 1 },
+    { id: 25, row: 7, col: 5 }, { id: 26, row: 8, col: 5 },
+    { id: 27, row: 7, col: 8 }, { id: 28, row: 8, col: 8 },
+    { id: 29, row: 7, col: 11 }, { id: 30, row: 8, col: 11 },
+    { id: 31, row: 7, col: 14 }, { id: 32, row: 8, col: 14 },
 ];
 
-function Coworking() {
-    const [selected, setSelected] = useState([]);
-    const [activeSeat, setActiveSeat] = useState(null);
-    const [startTime, setStartTime] = useState("09:00");
-    const [endTime, setEndTime] = useState("17:00");
-    const maxDuration = 8 * 60; // минут
+function Coworking({ interval = 5000 }) {
+    const [seats, setSeats] = useState([]);
+    const [selectedSeat, setSelectedSeat] = useState(null);
+    const [bookingInfo, setBookingInfo] = useState(null);
+    const [showBookingForm, setShowBookingForm] = useState(false);
+    const [bookingTimes, setBookingTimes] = useState({
+        startTime: '',
+        endTime: ''
+    });
 
-    const toggleSeat = (id) => {
-        setActiveSeat(id);
-        setStartTime("09:00");
-        setEndTime("17:00");
+    const fetchSeats = async () => {
+        const token = getToken();
+        try {
+            const response = await fetch("http://localhost:8080/coworking", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+            const data = await response.json();
+            if (response.ok) {
+                setSeats(data);
+            } else {
+                throw new Error(data.message || 'Ошибка при получении данных');
+            }
+        } catch (err) {
+            console.error('Ошибка:', err);
+        }
     };
 
-    const confirmBooking = () => {
-        setSelected(prev => [...prev, activeSeat]);
-        setActiveSeat(null);
+    const handleSeatClick = async (seat) => {
+        const occupiedSeat = seats.find(s => s.seatId === seat.id);
+        if (occupiedSeat) {
+            setSelectedSeat(seat);
+            setBookingInfo(occupiedSeat);
+            setShowBookingForm(false);
+        } else {
+            setSelectedSeat(seat);
+            setBookingInfo(null);
+            setShowBookingForm(true);
+            const now = new Date();
+            const currentTime = now.toTimeString().slice(0, 5);
+            setBookingTimes({
+                startTime: currentTime,
+                endTime: ''
+            });
+        }
     };
 
-    const closePanel = () => {
-        setActiveSeat(null);
+    const handleStartTimeChange = (e) => {
+        const startTime = e.target.value;
+        setBookingTimes(prev => ({
+            ...prev,
+            startTime
+        }));
+    };
+
+    const handleEndTimeChange = (e) => {
+        const endTime = e.target.value;
+        const start = new Date(`2000-01-01T${bookingTimes.startTime}`);
+        const end = new Date(`2000-01-01T${endTime}`);
+        const diffHours = (end - start) / (1000 * 60 * 60);
+
+        if (diffHours > 8) {
+            alert('Максимальное время бронирования - 8 часов');
+            return;
+        }
+
+        setBookingTimes(prev => ({
+            ...prev,
+            endTime
+        }));
+    };
+
+    const handleBooking = async () => {
+        if (!bookingTimes.startTime || !bookingTimes.endTime) {
+            alert('Пожалуйста, выберите время начала и окончания');
+            return;
+        }
+
+        const token = getToken();
+        try {
+            const response = await fetch("http://localhost:8080/coworking", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    seatId: selectedSeat.id,
+                    startTime: `${bookingTimes.startTime}:00`,
+                    endTime: `${bookingTimes.endTime}:00`,
+                    status: "BOOKED"
+                })
+            });
+
+            if (response.ok) {
+                alert('Место успешно забронировано');
+                setShowBookingForm(false);
+                fetchSeats();
+            } else {
+                const error = await response.json();
+                alert(error.message || 'Ошибка при бронировании');
+            }
+        } catch (err) {
+            console.error('Ошибка:', err);
+            alert('Произошла ошибка при бронировании');
+        }
     };
 
     useEffect(() => {
-        if (!activeSeat) return;
-        const [h1, m1] = startTime.split(":").map(Number);
-        const [h2, m2] = endTime.split(":").map(Number);
-        const delta = (h2 * 60 + m2) - (h1 * 60 + m1);
-        if (delta > maxDuration) {
-            const limit = h1 * 60 + m1 + maxDuration;
-            const newH = String(Math.floor(limit / 60)).padStart(2, "0");
-            const newM = String(limit % 60).padStart(2, "0");
-            setEndTime(`${newH}:${newM}`);
-        }
-    }, [startTime, endTime, activeSeat]);
+        fetchSeats();
+        const timer = setInterval(fetchSeats, interval);
+        return () => clearInterval(timer);
+    }, [interval]);
+
+    const isSeatOccupied = (seatId) => {
+        return seats.some(s => s.seatId === seatId);
+    };
 
     return (
-        <div className="coworking-wrapper">
-            <div className="grid-container">
+        <div className="coworking-container">
+            <div className="seats-grid">
                 {initialSeats.map(seat => (
                     <div
                         key={seat.id}
-                        className={`seat ${selected.includes(seat.id) ? "selected" : ""}`}
-                        style={{ gridColumn: seat.col, gridRow: seat.row }}
-                        onClick={() => toggleSeat(seat.id)}
-                    />
+                        className={`seat ${isSeatOccupied(seat.id) ? 'occupied' : 'available'}`}
+                        style={{
+                            gridRow: seat.row,
+                            gridColumn: seat.col
+                        }}
+                        onClick={() => handleSeatClick(seat)}
+                    >
+                        {seat.id}
+                    </div>
                 ))}
             </div>
 
-            {/* Компактная панель под шапкой */}
-            {activeSeat && (
-                <div
-                    className="booking-panel"
-                    style={{
-                        position: "fixed",
-                        top: "64px",       // сразу после синей шапки
-                        right: 0,
-                        width: "280px",    // компактная ширина
-                        padding: "16px",
-                        background: "#fff",
-                        boxShadow: "-2px 0 8px rgba(0,0,0,0.1)",
-                        height: "auto",
-                        zIndex: 1000
-                    }}
-                >
-                    <button className="close-btn" onClick={closePanel}>×</button>
-                    <h2 style={{ fontSize: "16px", margin: "8px 0" }}>
-                        Место №{activeSeat}
-                    </h2>
-                    <label style={{ display: "block", marginBottom: "12px" }}>
-                        Начало
-                        <input
-                            type="time"
-                            value={startTime}
-                            onChange={e => setStartTime(e.target.value)}
-                            style={{ width: "100%", marginTop: "4px" }}
-                        />
-                    </label>
-                    <label style={{ display: "block", marginBottom: "16px" }}>
-                        Конец
-                        <input
-                            type="time"
-                            value={endTime}
-                            onChange={e => setEndTime(e.target.value)}
-                            style={{ width: "100%", marginTop: "4px" }}
-                        />
-                    </label>
-                    <button
-                        className="confirm-btn"
-                        onClick={confirmBooking}
-                        style={{
-                            width: "100%",
-                            padding: "8px",
-                            background: "#0052cc",
-                            color: "#fff",
-                            border: "none",
-                            borderRadius: "4px",
-                            cursor: "pointer"
-                        }}
-                    >
-                        Подтвердить
-                    </button>
+            {bookingInfo && (
+                <div className="booking-info">
+                    <h3>Информация о бронировании</h3>
+                    <p>Место: {selectedSeat.id}</p>
+                    <p>Начало: {bookingInfo.startTime}</p>
+                    <p>Окончание: {bookingInfo.endTime}</p>
+                    <button onClick={() => setBookingInfo(null)}>Закрыть</button>
+                </div>
+            )}
+
+            {showBookingForm && (
+                <div className="booking-form">
+                    <h3>Забронировать место {selectedSeat?.id}</h3>
+                    <div className="time-inputs">
+                        <div>
+                            <label>Время начала:</label>
+                            <input
+                                type="time"
+                                value={bookingTimes.startTime}
+                                onChange={handleStartTimeChange}
+                                min={new Date().toTimeString().slice(0, 5)}
+                            />
+                        </div>
+                        <div>
+                            <label>Время окончания:</label>
+                            <input
+                                type="time"
+                                value={bookingTimes.endTime}
+                                onChange={handleEndTimeChange}
+                                min={bookingTimes.startTime}
+                            />
+                        </div>
+                    </div>
+                    <div className="booking-actions">
+                        <button onClick={handleBooking}>Подтвердить</button>
+                        <button onClick={() => setShowBookingForm(false)}>Отмена</button>
+                    </div>
                 </div>
             )}
         </div>

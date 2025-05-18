@@ -78,7 +78,7 @@ function Register() {
                 <button type="submit">Зарегистрироваться</button>
                 <h2>
                     <p>Уже зарегистрированы?</p>
-                    <Link to={"auth/login"}>
+                    <Link to={"/auth/login"}>
                         <p>Войдите в свой аккаунт</p>
                     </Link>
                 </h2>

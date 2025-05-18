@@ -13,7 +13,10 @@ import java.sql.Time;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CoworkingDto {
+public class AdminBookingDto {
+    @NotNull
+    private Long userId;
+
     @NotNull
     private Long seatId;
 

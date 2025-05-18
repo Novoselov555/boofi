@@ -19,9 +19,8 @@ public class Coworking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name="userId", nullable = false)
-    private User user;
+    @Column(name="user_id", nullable = false)
+    private Long userId;
 
     @Column(nullable = false)
     private Long seatId;
