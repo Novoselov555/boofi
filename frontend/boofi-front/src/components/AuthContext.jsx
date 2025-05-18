@@ -32,11 +32,23 @@ export function AuthProvider({ children }) {
             })
             .then(response => response.json())
             .then(data => {
-                if (data.role) {
-                    setUserRole(data.role);
+                if (data.id) {
+                    // Получаем полную информацию о пользователе
+                    return fetch(`http://localhost:8080/users/${data.id}`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
                 }
             })
-            .catch(() => {
+            .then(response => response.json())
+            .then(userData => {
+                if (userData && userData.role) {
+                    setUserRole(userData.role);
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
                 logout();
             });
         }
