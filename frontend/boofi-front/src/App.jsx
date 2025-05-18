@@ -11,6 +11,7 @@ import Register from "./components/Register.jsx";
 import Login from "./components/Login.jsx";
 import PrivateRoute from "./PrivateRoute.jsx";
 import Profile from "./components/Profile.jsx";
+import AdminPanel from "./components/admin/AdminPanel.jsx";
 import {AuthProvider} from './components/AuthContext.jsx';
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
                         <Route path="/coworking" element={<Coworking/>}/>
                         <Route path="/meeting" element={<Meeting/>}/>
                         <Route path="/callbox" element={<Callbox/>}/>
+                        <Route path="/admin" element={<AdminPanel/>}/>
                     </Route>
                 </Routes>
             </AuthProvider>
