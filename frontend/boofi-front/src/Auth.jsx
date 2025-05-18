@@ -9,7 +9,3 @@ export function getToken() {
 export function clearToken() {
     localStorage.removeItem("jwtToken");
 }
-
-// export function isAuthenticated() {
-//     return !!getToken();
-// }

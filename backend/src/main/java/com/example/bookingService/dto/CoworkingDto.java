@@ -1,6 +1,7 @@
 package com.example.bookingService.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,15 +14,15 @@ import java.sql.Time;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CoworkingDto {
-    @NotBlank
+    @NotNull
     private Long seatId;
 
     @NotBlank
     private String status;
 
-    @NotBlank
+    @NotNull
     private Time startTime;
 
-    @NotBlank
+    @NotNull
     private Time endTime;
 }
